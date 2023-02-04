@@ -48,9 +48,9 @@ public class GoogleSearchPage extends SearchPage {
 
     public void clickNextPageButton() {
         log.info("Clicking next page button.");
-        getJavascriptExecutor().executeScript("arguments[0].click()", getWebDriverWait().until(
-                ExpectedConditions.elementToBeClickable(
-                        By.xpath("//a[@id='pnnext']//span[@class='SJajHc NVbCr']"))));
+        nextPageButton = getWebDriverWait().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//a[@id='pnnext']//span[@class='SJajHc NVbCr']")));
+        getJavascriptExecutor().executeScript("arguments[0].click()", nextPageButton);
     }
 
 }

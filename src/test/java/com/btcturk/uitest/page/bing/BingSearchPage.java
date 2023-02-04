@@ -50,9 +50,9 @@ public class BingSearchPage extends SearchPage {
 
     public void clickNextPageButton() {
         log.info("Clicking next page button.");
-        getJavascriptExecutor().executeScript("arguments[0].click()", getWebDriverWait().until(
-                ExpectedConditions.elementToBeClickable(
-                        By.xpath("//li[@class='b_pag']//a[contains(@class,'sb_pagN')]"))));
+        nextPageButton = getWebDriverWait().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//li[@class='b_pag']//a[contains(@class,'sb_pagN')]")));
+        getJavascriptExecutor().executeScript("arguments[0].click()", nextPageButton);
     }
 
 }
