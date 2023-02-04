@@ -20,12 +20,14 @@ public class SearchEngineTest extends BaseTest {
 
     @Test
     public void should_return_common_search_items_when_compare_google_and_bing_search_engines_with_same_searched_keyword() {
+        // given
         final String input = "bitcoin";
         final int searchResultCount = 10;
 
         WebDriver webDriver = getWebDriver();
         webDriver.get("https://www.google.com.tr/");
 
+        // google search
         GoogleMainPage googleMainPage = new GoogleMainPage(webDriver);
         googleMainPage.verifyPage();
         googleMainPage.enterInputToSearchBar(input);
@@ -34,8 +36,9 @@ public class SearchEngineTest extends BaseTest {
         GoogleSearchPage googleSearchPage = new GoogleSearchPage(webDriver);
         googleSearchPage.verifyPage();
         googleSearchPage.verifyInput(input);
-        Set<SearchItem> googleSearchItemList = Set.copyOf(searchItems(googleSearchPage, searchResultCount));
+        Set<SearchItem> googleSearchItemList = Set.copyOf(findSearchItems(googleSearchPage, searchResultCount));
 
+        // bing search
         webDriver.navigate().to("https://bing.com/");
         BingMainPage bingMainPage = new BingMainPage(webDriver);
         bingMainPage.verifyPage();
@@ -45,15 +48,16 @@ public class SearchEngineTest extends BaseTest {
         BingSearchPage bingSearchPage = new BingSearchPage(webDriver);
         bingSearchPage.verifyPage();
         bingSearchPage.verifyInput(input);
-        Set<SearchItem> bingSearchItemList = Set.copyOf(searchItems(bingSearchPage, searchResultCount));
+        Set<SearchItem> bingSearchItemList = Set.copyOf(findSearchItems(bingSearchPage, searchResultCount));
 
+        // find commons between bing and google
         Set<SearchItem> commonsSearchItemList = bingSearchItemList.stream()
                 .filter(a -> googleSearchItemList.stream().anyMatch(b -> b.getLink().equals(a.getLink())))
                 .collect(Collectors.toSet());
         log.info("Common items: \"{}\"", commonsSearchItemList);
     }
 
-    private List<SearchItem> searchItems(SearchPage searchPage, final int count) {
+    private List<SearchItem> findSearchItems(SearchPage searchPage, final int count) {
         List<SearchItem> searchItems = new LinkedList<>();
         while (searchItems.size() < count) {
             List<SearchItem> tmpSearchItems = searchPage.getSearchResults();
@@ -65,12 +69,10 @@ public class SearchEngineTest extends BaseTest {
                     searchItems.add(tmpSearchItems.get(i));
                 }
             }
+
+            // after adding of new search items if we're not finish we have to change the page.
             int countLeft = count - searchItems.size();
-            if (countLeft == 0) {
-                break;
-            }
-            // after the adding of new search items we have to change the page.
-            else if (countLeft > 0) {
+            if (countLeft > 0) {
                 searchPage.clickNextPageButton();
                 if (searchPage instanceof GoogleSearchPage) {
                     searchPage = new GoogleSearchPage(getWebDriver(), searchPage.getPageNumber() + 1);
@@ -81,7 +83,10 @@ public class SearchEngineTest extends BaseTest {
                 }
                 searchPage.verifyPage();
             }
-            // this is our insurance for somewhat exceeding search item limit.
+            // implementing some additional controls.
+            else if (countLeft == 0) {
+                break;
+            }
             else {
                 for (int i = 0; i > countLeft; i--) {
                     log.info("  [{}]Removing extra cached search item.", searchItems.size() - 1);
@@ -97,6 +102,6 @@ public class SearchEngineTest extends BaseTest {
                     s.getTitle(), s.getLink(), s.getDescription());
         }
         return searchItems;
-
     }
+
 }
