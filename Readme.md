@@ -7,7 +7,7 @@ Run simply *./run.sh* or alternatively follow these steps in order to run the te
 - Run following commands:
    - *docker pull selenium/standalone-chrome*
    - *docker run -d --name selenium -p 4444:4444 -v --shm-size="2g" selenium/standalone-chrome*
-- Now the container created for test. You can navigate https://localhost:4444/ui to monitor tests on an interface.
+- Now the container created for test. You can navigate http://localhost:4444/ui to watch the session.
 ### Running Test
 - Run *./mvnw clean test -DisLocal=false*
 ### Cleaning Docker Container
