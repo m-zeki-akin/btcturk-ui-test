@@ -1,5 +1,6 @@
 package com.btcturk.uitest.test;
 
+import com.btcturk.uitest.dataprovider.SearchEngineDataProvider;
 import com.btcturk.uitest.model.SearchItem;
 import com.btcturk.uitest.page.SearchPage;
 import com.btcturk.uitest.page.google.GoogleMainPage;
@@ -18,10 +19,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SearchEngineTest extends BaseTest {
 
-    @Test
-    public void should_return_common_search_items_when_compare_google_and_bing_search_engines_with_same_searched_keyword() {
+    @Test(dataProvider = "search-inputs", dataProviderClass = SearchEngineDataProvider.class)
+    public void should_return_common_search_items_when_compare_google_and_bing_search_engines_with_same_searched_keyword(String searchInput) {
         // given
-        final String input = "bitcoin";
+        log.info("Searching -> {}", searchInput);
         final int searchResultCount = 10;
 
         WebDriver webDriver = getWebDriver();
@@ -30,24 +31,24 @@ public class SearchEngineTest extends BaseTest {
         // google search
         GoogleMainPage googleMainPage = new GoogleMainPage(webDriver);
         googleMainPage.verifyPage();
-        googleMainPage.enterInputToSearchBar(input);
+        googleMainPage.enterInputToSearchBar(searchInput);
         googleMainPage.clickSearchButton();
 
         GoogleSearchPage googleSearchPage = new GoogleSearchPage(webDriver);
         googleSearchPage.verifyPage();
-        googleSearchPage.verifyInput(input);
+        googleSearchPage.verifyInput(searchInput);
         Set<SearchItem> googleSearchItemList = Set.copyOf(findSearchItems(googleSearchPage, searchResultCount));
 
         // bing search
         webDriver.navigate().to("https://bing.com/");
         BingMainPage bingMainPage = new BingMainPage(webDriver);
         bingMainPage.verifyPage();
-        bingMainPage.enterInputToSearchBar(input);
+        bingMainPage.enterInputToSearchBar(searchInput);
         bingMainPage.clickSearchButton();
 
         BingSearchPage bingSearchPage = new BingSearchPage(webDriver);
         bingSearchPage.verifyPage();
-        bingSearchPage.verifyInput(input);
+        bingSearchPage.verifyInput(searchInput);
         Set<SearchItem> bingSearchItemList = Set.copyOf(findSearchItems(bingSearchPage, searchResultCount));
 
         // find commons between bing and google
@@ -55,6 +56,7 @@ public class SearchEngineTest extends BaseTest {
                 .filter(a -> googleSearchItemList.stream().anyMatch(b -> b.getLink().equals(a.getLink())))
                 .collect(Collectors.toSet());
         log.info("Common items: \"{}\"", commonsSearchItemList);
+        log.info("Search completed for -> {}", searchInput);
     }
 
     private List<SearchItem> findSearchItems(SearchPage searchPage, final int count) {
