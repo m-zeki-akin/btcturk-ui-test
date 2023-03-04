@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="All Test Suite">
-    <test verbose="1" preserve-order="true" name="btcturk-ui-test">
-        <parameter name="isLocal" value="true"/>
+<suite name="All Test Suite" thread-count="2">
+    <test verbose="1" preserve-order="true" name="chrome-test">
+        <parameter name="browser" value="CHROME"/>
+        <classes>
+            <class name="com.btcturk.uitest.test.SearchEngineTest"/>
+        </classes>
+    </test>
+    <test verbose="1" preserve-order="true" name="firefox-test">
+        <parameter name="browser" value="FIREFOX"/>
         <classes>
             <class name="com.btcturk.uitest.test.SearchEngineTest"/>
         </classes>

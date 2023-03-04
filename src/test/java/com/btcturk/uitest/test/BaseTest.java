@@ -1,8 +1,7 @@
 package com.btcturk.uitest.test;
 
+import com.btcturk.uitest.Browser;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
@@ -10,44 +9,30 @@ import org.testng.annotations.Parameters;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
+import java.util.Objects;
 
 public class BaseTest {
-    private ThreadLocal<WebDriver> webDriver;
+    private final ThreadLocal<WebDriver> webDriver;
+    private static final String HUB_HOST = System.getenv("SELENIUM_HUB_HOST");
 
     public BaseTest() {
         this.webDriver = new ThreadLocal<>();
     }
 
+    @Parameters("browser")
     @BeforeTest
-    @Parameters("isLocal")
-    protected void setup(String isLocal) throws IOException {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments(
-                "--ignore-ssl-errors=yes",
-                "--ignore-certificate-errors",
-                "start-maximized",
-                "--no-sandbox",
-                "--disable-dev-shm-usage"
-        );
-        if(isLocal.equalsIgnoreCase("true")){
-            WebDriver webDriver = new ChromeDriver(options);
-            webDriver.manage().deleteAllCookies();
-            webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(14));
-            setWebDriver(webDriver);
-        }else {
-            options.addArguments("--headless");
-            RemoteWebDriver remoteWebDriver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), options);
-            remoteWebDriver.manage().deleteAllCookies();
-            remoteWebDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(14));
-            setWebDriver(remoteWebDriver);
+    protected void setup(Browser browser) throws IOException {
+        if (Objects.nonNull(HUB_HOST)) {
+            setWebDriver(new RemoteWebDriver(new URL("http://" + HUB_HOST + ":4444/wd/hub"), browser.options()));
+        } else {
+            setWebDriver(browser.driver());
         }
-
     }
 
     @AfterTest
     protected void teardown() {
         getWebDriver().quit();
+        webDriver.remove();
     }
 
     public WebDriver getWebDriver() {

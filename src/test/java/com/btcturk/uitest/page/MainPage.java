@@ -3,6 +3,7 @@ package com.btcturk.uitest.page;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 @Slf4j
 public abstract class MainPage extends BasePage{
@@ -20,6 +21,6 @@ public abstract class MainPage extends BasePage{
 
     public void clickSearchButton() {
         log.info("Click search button.");
-        searchButton.click();
+        getWebDriverWait().until(ExpectedConditions.elementToBeClickable(searchButton)).click();
     }
 }
