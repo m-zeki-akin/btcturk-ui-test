@@ -3,15 +3,6 @@ name: Run Selenium tests with Docker-Selenium
 on: [push]
 
 jobs:
-  setup_docker:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v1
 
   chrome_test:
     runs-on: ubuntu-latest
