@@ -43,7 +43,7 @@ jobs:
           
       - name: Start Selenium Grid
         run: |
-          docker-compose up -d
+          docker-compose -f docker-compose.yml up -d 
 
       - name: Wait for Selenium Grid to start
         run: |
@@ -58,4 +58,4 @@ jobs:
 
       - name: Stop Selenium Grid
         run: |
-          docker-compose down
+          docker-compose -f docker-compose.yml down
