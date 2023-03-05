@@ -12,7 +12,7 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
         profile: [chrome, firefox, edge]
     env:
-      SELENIUM_HUB_HOST: localhost
+      SELENIUM_HUB_HOST: selenium-hub
       SELENIUM_HUB_PORT: 4444
     steps:
       - uses: actions/checkout@v3
@@ -28,18 +28,18 @@ jobs:
           open /Applications/Docker.app
           while ! docker info &>/dev/null; do sleep 1; done
       - name: Start Selenium Grid
-        run: docker run -d -p 4444:4444 --shm-size=2g selenium/hub:latest
+        run: docker run -d -p 4444:4444 --net grid --name selenium-hub --shm-size=2g selenium/hub:latest
         id: selenium-hub
       - name: Start Selenium Node (Chrome)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-chrome:latest
+        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-chrome:latest
         if: matrix.profile == 'chrome'
         id: selenium-node-chrome
       - name: Start Selenium Node (Firefox)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-firefox:latest
+        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-firefox:latest
         if: matrix.profile == 'firefox'
         id: selenium-node-firefox
       - name: Start Selenium Node (Edge)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-edge:latest
+        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-edge:latest
         if: matrix.profile == 'edge'
         id: selenium-node-edge
       - name: Build and test with Maven
