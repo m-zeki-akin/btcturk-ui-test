@@ -21,16 +21,16 @@ jobs:
       uses: actions/checkout@v2
     - name: Start Docker-Selenium container
       run: |
-        docker run -d -p 4444:4444 -p 5900:5900 selenium/standalone-chrome:latest
+        sudo docker run -d -p 4444:4444 -p 5900:5900 selenium/standalone-chrome:latest
       continue-on-error: true
     - name: Wait for Docker-Selenium container to start
       run: sleep 30
     - name: Run Selenium tests with Chrome
       run: |
-        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4444 -v "$(pwd)":/app -w /app selenium/standalone-chrome:latest sh -c "./mvnw clean test -Pchrome-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4444 -v "$(pwd)":/app -w /app selenium/standalone-chrome:latest sh -c "./mvnw clean test -Pchrome-prod"
     - name: Stop Docker-Selenium container
       run: |
-        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-chrome:latest)
+        sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-chrome:latest)
 
   firefox_test:
     runs-on: ubuntu-latest
@@ -40,16 +40,16 @@ jobs:
       uses: actions/checkout@v2
     - name: Start Docker-Selenium container
       run: |
-        docker run -d -p 4445:4444 -p 5901:5900 selenium/standalone-firefox:latest
+        sudo docker run -d -p 4445:4444 -p 5901:5900 selenium/standalone-firefox:latest
       continue-on-error: true
     - name: Wait for Docker-Selenium container to start
       run: sleep 30
     - name: Run Selenium tests with Firefox
       run: |
-        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4445 -v "$(pwd)":/app -w /app selenium/standalone-firefox:latest sh -c "./mvnw clean test -Pfirefox-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4445 -v "$(pwd)":/app -w /app selenium/standalone-firefox:latest sh -c "./mvnw clean test -Pfirefox-prod"
     - name: Stop Docker-Selenium container
       run: |
-        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-firefox:latest)
+        sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-firefox:latest)
 
   edge_test:
     runs-on: ubuntu-latest
@@ -59,13 +59,13 @@ jobs:
       uses: actions/checkout@v2
     - name: Start Docker-Selenium container
       run: |
-        docker run -d -p 4446:4444 -p 5902:5900 selenium/standalone-edge:latest
+        sudo docker run -d -p 4446:4444 -p 5902:5900 selenium/standalone-edge:latest
       continue-on-error: true
     - name: Wait for Docker-Selenium container to start
       run: sleep 30
     - name: Run Selenium tests with Edge
       run: |
-        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4446 -v "$(pwd)":/app -w /app selenium/standalone-edge:latest sh -c "./mvnw clean test -Pedge-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4446 -v "$(pwd)":/app -w /app selenium/standalone-edge:latest sh -c "./mvnw clean test -Pedge-prod"
     - name: Stop Docker-Selenium container
       run: |
-        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-edge:latest)
+        sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-edge:latest)
