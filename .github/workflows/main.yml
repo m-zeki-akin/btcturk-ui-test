@@ -30,10 +30,10 @@ jobs:
           open /Applications/Docker.app
           while ! docker info &>/dev/null; do sleep 1; done
 
-      - name: Setup Docker Compose
-        uses: docker/setup-docker-compose@v1
+      - name: Set up Docker Compose
+        uses: docker/compose@v2.1.1
         with:
-          version: ${{ env.DOCKER_COMPOSE_VERSION }}
+          compose-version: '2.1.1'
 
       - name: Start Selenium Grid
         run: |
