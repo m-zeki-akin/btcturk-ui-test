@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aspectj.version>1.9.19</aspectj.version>
-        <testngxml.file.path>src/test/resources/suite/testng.xml</testngxml.file.path>
+        <testng.suiteXmlFile>src/test/resources/suite/testng.xml</testng.suiteXmlFile>
     </properties>
 
     <dependencies>
@@ -65,7 +65,7 @@
                 <version>3.0.0-M8</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>${testngxml.file.path}</suiteXmlFile>
+                        <suiteXmlFile>${testng.suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
@@ -78,11 +78,34 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/test/resources</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
         <profile>
-            <id>chrome-prod</id>
+            <id>chrome</id>
             <properties>
                 <browser.name>CHROME</browser.name>
                 <browser.version>latest</browser.version>
@@ -100,7 +123,7 @@
             </properties>
         </profile>
         <profile>
-            <id>firefox-prod</id>
+            <id>firefox</id>
             <properties>
                 <browser.name>FIREFOX</browser.name>
                 <browser.version>latest</browser.version>
@@ -109,7 +132,7 @@
             </properties>
         </profile>
         <profile>
-            <id>edge-dev</id>
+            <id>edge</id>
             <properties>
                 <browser.name>EDGE</browser.name>
                 <browser.version>latest</browser.version>
