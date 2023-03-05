@@ -1,56 +1,38 @@
-name: Selenium Grid Tests
-
-on: [push, pull_request]
-
+name: Selenium Tests
+on:
+  push:
+    branches:
+      - main
 jobs:
-  tests:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        browser: [chrome, firefox, edge]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        profile: [chrome, firefox, edge]
     env:
       SELENIUM_HUB_HOST: localhost
       SELENIUM_HUB_PORT: 4444
-      RUN_SCRIPT: |
-        mvn clean test -P${{ matrix.browser }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          if ($env:matrix_os -eq 'ubuntu-latest') {
-            sudo apt-get update
-            sudo apt-get install -y maven
-            sudo apt-get install -y openjdk-17-jdk
-            if ($env:matrix_browser -eq 'chrome') {
-              sudo apt-get install -y chromium-browser
-            } elseif ($env:matrix_browser -eq 'firefox') {
-              sudo apt-get install -y firefox
-            } elseif ($env:matrix_browser -eq 'edge') {
-              sudo apt-get install -y microsoft-edge-beta
-            }
-          } elseif ($env:matrix_os -eq 'macos-latest') {
-            brew update
-            brew install maven
-            brew install openjdk@17
-            if ($env:matrix_browser -eq 'chrome') {
-              brew install google-chrome
-            } elseif ($env:matrix_browser -eq 'firefox') {
-              brew install firefox
-            } elseif ($env:matrix_browser -eq 'edge') {
-              brew install --cask microsoft-edge-beta
-            }
-          } elseif ($env:matrix_os -eq 'windows-latest') {
-            choco install -y maven
-            choco install -y jdk17
-            if ($env:matrix_browser -eq 'chrome') {
-              choco install -y googlechrome
-            } elseif ($env:matrix_browser -eq 'firefox') {
-              choco install -y firefox
-            } elseif ($env:matrix_browser -eq 'edge') {
-              choco install -y microsoft-edge-beta
-            }
-          }
-        shell: pwsh
-      - name: Run tests on ${{ matrix.browser }}
-        run: ${{ env.RUN_SCRIPT }}
+      - uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+      - name: Start Selenium Grid
+        run: docker run -d -p 4444:4444 --shm-size=2g selenium/hub:latest
+        id: selenium-hub
+      - name: Start Selenium Node (Chrome)
+        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-chrome:latest
+        if: matrix.profile == 'chrome'
+        id: selenium-node-chrome
+      - name: Start Selenium Node (Firefox)
+        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-firefox:latest
+        if: matrix.profile == 'firefox'
+        id: selenium-node-firefox
+      - name: Start Selenium Node (Edge)
+        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-edge:latest
+        if: matrix.profile == 'edge'
+        id: selenium-node-edge
+      - name: Build and test with Maven
+        run: mvn clean test -P${{ matrix.profile }}
