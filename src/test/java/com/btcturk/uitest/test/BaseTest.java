@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class BaseTest {
     private final ThreadLocal<WebDriver> webDriver;
-    private static final String HUB_HOST = "selenium-hub";
+    private static final String HUB_HOST = "localhost";
     private static final String HUB_PORT = "4444";
     private static final String HUB_URL = "http://" + HUB_HOST + ":" + HUB_PORT + "/wd/hub";
 
