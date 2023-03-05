@@ -22,11 +22,7 @@ jobs:
           java-version: '17'
 
       - name: Install Docker (macOS)
-        if: matrix.os == 'macOS-latest'
-        run: |
-          brew install --cask docker
-          open /Applications/Docker.app
-          while ! docker info &>/dev/null; do sleep 1; done
+        uses: docker-practice/actions-setup-docker@master    
 
       - name: Install Docker Compose on Linux
         if: matrix.os == 'ubuntu-latest'
