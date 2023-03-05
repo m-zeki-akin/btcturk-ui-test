@@ -15,7 +15,7 @@ public class BaseTest {
     private final ThreadLocal<WebDriver> webDriver;
     private static final String HUB_HOST = System.getenv("SELENIUM_HUB_HOST");
     private static final String HUB_PORT = System.getenv("SELENIUM_HUB_PORT");
-    private static final String HUB_URL = "http://" + HUB_HOST + ":" + HUB_PORT + "+/wd/hub";
+    private static final String HUB_URL = "http://" + HUB_HOST + ":" + HUB_PORT + "/wd/hub";
 
     public BaseTest() {
         this.webDriver = new ThreadLocal<>();
