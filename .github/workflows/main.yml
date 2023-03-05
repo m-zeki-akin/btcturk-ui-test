@@ -22,20 +22,31 @@ jobs:
           java-version: '17'
 
       - name: Install Docker (macOS)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macOS-latest'
         run: |
           brew install --cask docker
           open /Applications/Docker.app
           while ! docker info &>/dev/null; do sleep 1; done
 
-      - name: Setup Docker Compose CLI
-        uses: docker/compose-action@2.2.3
-        with:
-          compose-version: '2.0.1'
-
-      - name: Start Selenium Grid
+      - name: Install Docker Compose on Linux
+        if: matrix.os == 'ubuntu-latest'
         run: |
-          docker-compose up -d
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+          
+      - name: Install Docker Compose on macOS
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew install docker-compose
+          
+      - name: Install Docker Compose on Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          Invoke-WebRequest "https://github.com/docker/compose/releases/download/$env:DOCKER_COMPOSE_VERSION/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile docker-compose.exe
+          Move-Item -Path .\docker-compose.exe -Destination C:\Windows\system32\docker-compose.exe
+            - name: Start Selenium Grid
+              run: |
+                docker-compose up -d
 
       - name: Wait for Selenium Grid to start
         run: |
