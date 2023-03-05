@@ -18,7 +18,7 @@ jobs:
       run: sleep 30
     - name: Run Selenium tests with Chrome
       run: |
-        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4444 -v "$(pwd)":/app -w /app selenium/standalone-chrome:latest sh -c "./mvnw clean test -Pchrome-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4444 -v "$(pwd)":/app -w /app selenium/standalone-chrome:latest sh -c "sudo ./mvnw clean test -Pchrome-prod"
     - name: Stop Docker-Selenium container
       run: |
         sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-chrome:latest)
@@ -37,7 +37,7 @@ jobs:
       run: sleep 30
     - name: Run Selenium tests with Firefox
       run: |
-        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4445 -v "$(pwd)":/app -w /app selenium/standalone-firefox:latest sh -c "./mvnw clean test -Pfirefox-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4445 -v "$(pwd)":/app -w /app selenium/standalone-firefox:latest sh -c "sudo ./mvnw clean test -Pfirefox-prod"
     - name: Stop Docker-Selenium container
       run: |
         sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-firefox:latest)
@@ -56,7 +56,7 @@ jobs:
       run: sleep 30
     - name: Run Selenium tests with Edge
       run: |
-        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4446 -v "$(pwd)":/app -w /app selenium/standalone-edge:latest sh -c "./mvnw clean test -Pedge-prod"
+        sudo docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4446 -v "$(pwd)":/app -w /app selenium/standalone-edge:latest sh -c "sudo ./mvnw clean test -Pedge-prod"
     - name: Stop Docker-Selenium container
       run: |
         sudo docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-edge:latest)
