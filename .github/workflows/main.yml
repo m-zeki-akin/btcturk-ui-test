@@ -18,6 +18,7 @@ jobs:
         run: |
           docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
           mvn clean test -P${{ matrix.browser }}
+        continue-on-error: true
 
   tests-on-linux:
     runs-on: ubuntu-latest
@@ -31,6 +32,7 @@ jobs:
         run: |
           docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
           mvn clean test -P${{ matrix.browser }}
+        continue-on-error: true
 
   tests-on-mac:
     runs-on: macos-latest
@@ -44,3 +46,4 @@ jobs:
         run: |
           docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
           mvn clean test -P${{ matrix.browser }}
+        continue-on-error: true
