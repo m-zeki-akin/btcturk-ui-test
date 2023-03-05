@@ -12,7 +12,7 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
         profile: [chrome, firefox, edge]
     env:
-      SELENIUM_HUB_HOST: $HOSTNAME
+      SELENIUM_HUB_HOST: localhost
       SELENIUM_HUB_PORT: 4444
     steps:
       - uses: actions/checkout@v3
