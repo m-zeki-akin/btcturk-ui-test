@@ -68,7 +68,7 @@
                         <suiteXmlFile>${testng.suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
                     <systemPropertyVariables>
-                        <browser>${browser.name}</browser>
+                        <browser.name>${browser.name}</browser.name>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
