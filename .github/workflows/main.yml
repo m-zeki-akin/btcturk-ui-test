@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows, macos, linux]
+        os: [windows, macos, ubuntu]
         browser: [chrome, firefox, edge]
     steps:
       - name: Checkout code
