@@ -21,6 +21,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Install Docker (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install --cask docker
+          open /Applications/Docker.app
+          while ! docker info &>/dev/null; do sleep 1; done
       - name: Build and test
         run: |
           docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
