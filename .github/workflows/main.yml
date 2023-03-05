@@ -1,46 +1,51 @@
 name: Selenium Tests
-on:
-  push:
-    branches:
-      - main
+
+on: [push]
+
 jobs:
-  test:
+  tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        profile: [chrome, firefox, edge]
-    env:
-      SELENIUM_HUB_HOST: localhost
-      SELENIUM_HUB_PORT: 4444
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        browser: [chrome, firefox, edge]
+        
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Java
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: '17'
+
       - name: Install Docker (macOS)
         if: matrix.os == 'macos-latest'
         run: |
           brew install --cask docker
           open /Applications/Docker.app
           while ! docker info &>/dev/null; do sleep 1; done
+
+      - name: Set up Docker Compose
+        uses: docker/compose-cli-action@v0.8.0
+
       - name: Start Selenium Grid
-        run: docker run -d -p 4444:4444 --shm-size=2g selenium/hub:latest
-        id: selenium-hub
-      - name: Start Selenium Node (Chrome)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-chrome:latest
-        if: matrix.profile == 'chrome'
-        id: selenium-node-chrome
-      - name: Start Selenium Node (Firefox)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-firefox:latest
-        if: matrix.profile == 'firefox'
-        id: selenium-node-firefox
-      - name: Start Selenium Node (Edge)
-        run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-edge:latest
-        if: matrix.profile == 'edge'
-        id: selenium-node-edge
-      - name: Build and test with Maven
-        run: mvn clean test -P${{ matrix.profile }}
+        run: |
+          docker-compose up -d
+
+      - name: Wait for Selenium Grid to start
+        run: |
+          for i in {1..30}; do
+            curl --fail http://localhost:4444/wd/hub/status && break
+            sleep 1
+          done
+
+      - name: Run Tests
+        run: |
+          mvn clean test -P${{ matrix.browser }}
+
+      - name: Stop Selenium Grid
+        run: |
+          docker-compose down
