@@ -17,10 +17,12 @@ public class SuiteListener implements ISuiteListener {
     @Override
     public void onStart(ISuite suite) {
         ISuiteListener.super.onStart(suite);
+        /*
         switch (browser){
             case CHROME -> WebDriverManager.chromedriver().setup();
             case FIREFOX -> WebDriverManager.firefoxdriver().setup();
             case EDGE -> WebDriverManager.edgedriver().setup();
         }
+        */
     }
 }

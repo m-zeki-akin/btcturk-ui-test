@@ -24,8 +24,8 @@ public class BaseTest {
     @Parameters("browser")
     @BeforeTest
     protected void setup(Browser browser) throws IOException {
-        System.out.println(HUB_URL);
-        System.out.println(browser.toString());
+        System.out.println("LOGGING -> " + HUB_URL);
+        System.out.println("LOGGING -> " + browser.toString());
         if (Objects.nonNull(HUB_HOST)) {
             setWebDriver(new RemoteWebDriver(new URL(HUB_URL), browser.options()));
         } else {
