@@ -3,13 +3,14 @@ name: Docker-Selenium
 on: [push]
 
 jobs:
-  tests-on-windows:
-    runs-on: windows-latest
+  run-tests:
+    runs-on: ${{ matrix.os }}-latest
     env:
       SELENIUM_HUB_HOST: 172.17.0.1
     strategy:
       fail-fast: true
       matrix:
+        os: [windows, macos, linux]
         browser: [chrome, firefox, edge]
     steps:
       - name: Checkout code
@@ -23,42 +24,3 @@ jobs:
         run: |
           docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
           mvn clean test -P${{ matrix.browser }}
-        continue-on-error: true
-
-  tests-on-linux:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        browser: [chrome, firefox, edge]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Build and test
-        run: |
-          docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
-          mvn clean test -P${{ matrix.browser }}
-        continue-on-error: true
-
-  tests-on-mac:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        browser: [chrome, firefox, edge]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Build and test
-        run: |
-          docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
-          mvn clean test -P${{ matrix.browser }}
-        continue-on-error: true
