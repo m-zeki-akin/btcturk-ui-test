@@ -2,9 +2,6 @@ name: Selenium Tests
 
 on: [push]
 
-env:
-  DOCKER_COMPOSE_VERSION: 2.2
-
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
