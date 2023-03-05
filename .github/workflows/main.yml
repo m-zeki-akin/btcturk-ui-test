@@ -28,7 +28,7 @@ jobs:
           open /Applications/Docker.app
           while ! docker info &>/dev/null; do sleep 1; done
       - name: Start Selenium Grid
-        run: docker run -d -p $SELENIUM_HUB_PORT:$SELENIUM_HUB_PORT --shm-size=2g selenium/hub:latest
+        run: docker run -d -p ${SELENIUM_HUB_PORT}:${SELENIUM_HUB_PORT} --shm-size=2g selenium/hub:latest
         id: selenium-hub
       - name: Start Selenium Node (Chrome)
         run: docker run -d --shm-size=2g -e HUB_HOST=$HOSTNAME selenium/node-chrome:latest
