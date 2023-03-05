@@ -10,10 +10,14 @@ jobs:
       matrix:
         browser: [chrome, firefox, edge]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Check Java version
         run: java -version
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Build and test
         run: |
           docker run -e SELENIUM_HUB_HOST=172.17.0.1 -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
@@ -25,10 +29,14 @@ jobs:
       matrix:
         browser: [chrome, firefox, edge]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Check Java version
         run: java -version
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Build and test
         run: |
           docker run -e SELENIUM_HUB_HOST=172.17.0.1 -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
@@ -40,12 +48,16 @@ jobs:
       matrix:
         browser: [chrome, firefox, edge]
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - name: Check Java version
         run: java -version
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Install Docker
-        uses: actions/setup-docker-macos-action@master
+        uses: docker-practice/actions-setup-docker@master
       - name: Build and test
         run: |
           docker run -e SELENIUM_HUB_HOST=172.17.0.1 -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
