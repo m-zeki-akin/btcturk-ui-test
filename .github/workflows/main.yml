@@ -15,41 +15,42 @@ jobs:
       RUN_SCRIPT: |
         mvn clean test -P${{ matrix.browser }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
+          if ($env:matrix_os -eq 'ubuntu-latest') {
             sudo apt-get update
             sudo apt-get install -y maven
             sudo apt-get install -y openjdk-17-jdk
-            if [ "${{ matrix.browser }}" = "chrome" ]; then
+            if ($env:matrix_browser -eq 'chrome') {
               sudo apt-get install -y chromium-browser
-            elif [ "${{ matrix.browser }}" = "firefox" ]; then
+            } elseif ($env:matrix_browser -eq 'firefox') {
               sudo apt-get install -y firefox
-            elif [ "${{ matrix.browser }}" = "edge" ]; then
+            } elseif ($env:matrix_browser -eq 'edge') {
               sudo apt-get install -y microsoft-edge-beta
-            fi
-          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            }
+          } elseif ($env:matrix_os -eq 'macos-latest') {
             brew update
             brew install maven
             brew install openjdk@17
-            if [ "${{ matrix.browser }}" = "chrome" ]; then
+            if ($env:matrix_browser -eq 'chrome') {
               brew install google-chrome
-            elif [ "${{ matrix.browser }}" = "firefox" ]; then
+            } elseif ($env:matrix_browser -eq 'firefox') {
               brew install firefox
-            elif [ "${{ matrix.browser }}" = "edge" ]; then
+            } elseif ($env:matrix_browser -eq 'edge') {
               brew install --cask microsoft-edge-beta
-            fi
-          elif [ "${{ matrix.os }}" = "windows-latest" ]; then
+            }
+          } elseif ($env:matrix_os -eq 'windows-latest') {
             choco install -y maven
             choco install -y jdk17
-            if [ "${{ matrix.browser }}" = "chrome" ]; then
+            if ($env:matrix_browser -eq 'chrome') {
               choco install -y googlechrome
-            elif [ "${{ matrix.browser }}" = "firefox" ]; then
+            } elseif ($env:matrix_browser -eq 'firefox') {
               choco install -y firefox
-            elif [ "${{ matrix.browser }}" = "edge" ]; then
+            } elseif ($env:matrix_browser -eq 'edge') {
               choco install -y microsoft-edge-beta
-            fi
-          fi
+            }
+          }
+        shell: pwsh
       - name: Run tests on ${{ matrix.browser }}
         run: ${{ env.RUN_SCRIPT }}
