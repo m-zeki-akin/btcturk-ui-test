@@ -21,8 +21,10 @@ public enum Browser {
                     "--start-maximized",
                     "--no-sandbox",
                     "--disable-dev-shm-usage",
-                    "--incognito"
+                    "--incognito",
+                    "--headless"
             );
+            options.setHeadless(true);
             return options;
         }
 
@@ -36,7 +38,8 @@ public enum Browser {
             FirefoxOptions options = new FirefoxOptions();
             options.addArguments(
                     "-width=1280",
-                    "-height=720"
+                    "-height=720",
+                    "--headless"
             );
             options.addPreference("dom.webnotifications.enabled", false);
             return options;
@@ -52,7 +55,8 @@ public enum Browser {
             EdgeOptions options = new EdgeOptions();
             options.addArguments(
                     "start-maximized",
-                    "disable-notifications"
+                    "disable-notifications",
+                    "--headless"
             );
             return options;
         }
