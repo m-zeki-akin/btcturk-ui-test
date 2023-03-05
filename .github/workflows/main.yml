@@ -44,9 +44,10 @@ jobs:
         run: |
           Invoke-WebRequest "https://github.com/docker/compose/releases/download/$env:DOCKER_COMPOSE_VERSION/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile docker-compose.exe
           Move-Item -Path .\docker-compose.exe -Destination C:\Windows\system32\docker-compose.exe
-            - name: Start Selenium Grid
-              run: |
-                docker-compose up -d
+          
+      - name: Start Selenium Grid
+        run: |
+          docker-compose up -d
 
       - name: Wait for Selenium Grid to start
         run: |
