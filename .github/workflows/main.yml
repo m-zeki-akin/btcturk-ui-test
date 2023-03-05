@@ -1,0 +1,41 @@
+name: Run Selenium tests with Docker-Selenium
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v1
+
+    - name: Start Docker-Selenium container
+      run: |
+        docker run -d -p 4444:4444 -p 5900:5900 selenium/standalone-chrome:latest
+        docker run -d -p 4445:4444 -p 5901:5900 selenium/standalone-firefox:latest
+        docker run -d -p 4446:4444 -p 5902:5900 selenium/standalone-edge:latest
+
+    - name: Wait for Docker-Selenium containers to start
+      run: sleep 30
+
+    - name: Run Selenium tests with Chrome
+      run: |
+        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4444 -v "$(pwd)":/app -w /app selenium/standalone-chrome:latest sh -c "your-test-script-command-for-chrome"
+
+    - name: Run Selenium tests with Firefox
+      run: |
+        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4445 -v "$(pwd)":/app -w /app selenium/standalone-firefox:latest sh -c "your-test-script-command-for-firefox"
+
+    - name: Run Selenium tests with Edge
+      run: |
+        docker run -e SELENIUM_HUB_HOST=172.17.0.1 -e SELENIUM_HUB_PORT=4446 -v "$(pwd)":/app -w /app selenium/standalone-edge:latest sh -c "your-test-script-command-for-edge"
+
+    - name: Stop Docker-Selenium containers
+      run: |
+        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-chrome:latest)
+        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-firefox:latest)
+        docker container stop $(docker container ls -q --filter ancestor=selenium/standalone-edge:latest)
