@@ -1,9 +1,6 @@
 name: Selenium Tests
 
 on: [push]
-
-env:
-  DOCKER_COMPOSE_VERSION: 2.2.3
       
 jobs:
   tests:
@@ -32,7 +29,7 @@ jobs:
           while ! docker info &>/dev/null; do sleep 1; done
 
       - name: Setup Docker Compose CLI
-        uses: docker/compose-action@${{ env.DOCKER_COMPOSE_VERSION }}
+        uses: docker/compose-action@2.2.3
         with:
           compose-version: '2.0.1'
 
