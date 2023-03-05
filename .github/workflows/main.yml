@@ -2,6 +2,9 @@ name: Selenium Tests
 
 on: [push]
 
+env:
+  DOCKER_COMPOSE_VERSION: 2.2.3
+      
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
@@ -10,8 +13,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         browser: [chrome, firefox, edge]
-    env:
-      DOCKER_COMPOSE_VERSION: 2.2.3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
