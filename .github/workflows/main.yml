@@ -7,6 +7,7 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         profile: [chrome, firefox, edge]
@@ -23,8 +24,9 @@ jobs:
       - name: Install Docker (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
+          brew install --cask docker
+          open /Applications/Docker.app
+          while ! docker info &>/dev/null; do sleep 1; done
       - name: Start Selenium Grid
         run: docker run -d -p $SELENIUM_HUB_PORT:$SELENIUM_HUB_PORT --shm-size=2g selenium/hub:latest
         id: selenium-hub
