@@ -38,8 +38,7 @@ jobs:
       - name: Install Docker Compose on Windows
         if: matrix.os == 'windows-latest'
         run: |
-          Invoke-WebRequest "https://github.com/docker/compose/releases/download/$env:DOCKER_COMPOSE_VERSION/docker-compose-Windows-x86_64.exe" -UseBasicParsing -OutFile docker-compose.exe
-          Move-Item -Path .\docker-compose.exe -Destination C:\Windows\system32\docker-compose.exe
+          choco install docker-desktop -y
           
       - name: Start Selenium Grid
         run: |
