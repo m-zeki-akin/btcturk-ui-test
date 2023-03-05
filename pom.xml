@@ -13,6 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aspectj.version>1.9.19</aspectj.version>
+        <testngxml.file.path>src/test/resources/suite/testng.xml</testngxml.file.path>
     </properties>
 
     <dependencies>
@@ -64,7 +65,7 @@
                 <version>3.0.0-M8</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/resources/suite/testng.xml</suiteXmlFile>
+                        <suiteXmlFile>${testngxml.file.path}</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
@@ -79,4 +80,43 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>chrome-prod</id>
+            <properties>
+                <browser.name>CHROME</browser.name>
+                <browser.version>latest</browser.version>
+                <platform.name>Windows 10</platform.name>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>chrome-dev</id>
+            <properties>
+                <browser.name>CHROME</browser.name>
+                <browser.version>latest</browser.version>
+                <platform.name>Windows 10</platform.name>
+                <environment>dev</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>firefox-prod</id>
+            <properties>
+                <browser.name>FIREFOX</browser.name>
+                <browser.version>latest</browser.version>
+                <platform.name>Windows 10</platform.name>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>edge-dev</id>
+            <properties>
+                <browser.name>EDGE</browser.name>
+                <browser.version>latest</browser.version>
+                <platform.name>Windows 10</platform.name>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="All Test Suite" thread-count="2">
+<suite name="All Test Suite" thread-count="2" data-provider-thread-count="2">
     <test verbose="1" preserve-order="true" name="chrome-test">
-        <parameter name="browser" value="CHROME"/>
-        <classes>
-            <class name="com.btcturk.uitest.test.SearchEngineTest"/>
-        </classes>
-    </test>
-    <test verbose="1" preserve-order="true" name="firefox-test">
-        <parameter name="browser" value="FIREFOX"/>
+        <parameter name="automationName" value="${automation.name}"/>
+        <parameter name="browser" value="${browser.name}"/>
+        <parameter name="browserVersion" value="${browser.version}"/>
+        <parameter name="platformName" value="${platform.name}"/>
+        <parameter name="environment" value="${environment}"/>
         <classes>
             <class name="com.btcturk.uitest.test.SearchEngineTest"/>
         </classes>
