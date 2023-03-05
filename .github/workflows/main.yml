@@ -1,46 +1,46 @@
-name: Selenium Tests
-on:
-  push:
-    branches:
-      - main
+name: Docker-Selenium
+
+on: [push]
+
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        profile: [chrome, firefox, edge]
+  tests-on-windows:
+    runs-on: windows-latest
     env:
-      SELENIUM_HUB_HOST: selenium-hub
-      SELENIUM_HUB_PORT: 4444
+      SELENIUM_HUB_HOST: 172.17.0.1
+    strategy:
+      fail-fast: true
+      matrix:
+        browser: [chrome, firefox, edge]
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      - name: Install Docker (macOS)
-        if: matrix.os == 'macos-latest'
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
         run: |
-          brew install --cask docker
-          open /Applications/Docker.app
-          while ! docker info &>/dev/null; do sleep 1; done
-      - name: Start Selenium Grid
-        run: docker run -d -p 4444:4444 --name selenium-hub --shm-size=2g selenium/hub:latest
-        id: selenium-hub
-      - name: Start Selenium Node (Chrome)
-        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-chrome:latest
-        if: matrix.profile == 'chrome'
-        id: selenium-node-chrome
-      - name: Start Selenium Node (Firefox)
-        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-firefox:latest
-        if: matrix.profile == 'firefox'
-        id: selenium-node-firefox
-      - name: Start Selenium Node (Edge)
-        run: docker run -d --shm-size=2g -e HUB_HOST=selenium-hub selenium/node-edge:latest
-        if: matrix.profile == 'edge'
-        id: selenium-node-edge
-      - name: Build and test with Maven
-        run: mvn clean test -P${{ matrix.profile }}
+          docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
+          mvn clean test -P${{ matrix.browser }}
+
+  tests-on-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox, edge]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
+          mvn clean test -P${{ matrix.browser }}
+
+  tests-on-mac:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox, edge]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          docker run -e SELENIUM_HUB_HOST=${SELENIUM_HUB_HOST} -d -p 4444:4444 selenium/standalone-${{ matrix.browser }}:latest
+          mvn clean test -P${{ matrix.browser }}
